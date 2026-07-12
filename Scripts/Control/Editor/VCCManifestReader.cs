@@ -1,5 +1,6 @@
 using System.IO;
 using UnityEngine;
+using System;
 
 public static class VCCManifestReader
 {
@@ -20,16 +21,22 @@ public static class VCCManifestReader
         
         if (File.Exists(path))
         {
-            string content = File.ReadAllText(path);
-            if (content.Contains("com.vrchat.avatars")) stats.SDKType = "Avatar Project";
-            else if (content.Contains("com.vrchat.worlds")) stats.SDKType = "World Project";
-            else stats.SDKType = "VRChat Project";
+            try
+            {
+                string content = File.ReadAllText(path);
+                if (content.Contains("com.vrchat.avatars")) stats.SDKType = "Avatar Project";
+                else if (content.Contains("com.vrchat.worlds")) stats.SDKType = "World Project";
+                else stats.SDKType = "VRChat Project";
 
-            // Count package entries
-            int count = 0;
-            string[] lines = File.ReadAllLines(path);
-            foreach (var line in lines) if (line.Contains("\"version\":")) count++;
-            stats.PackageCount = count;
+                string[] lines = File.ReadAllLines(path);
+                foreach (var line in lines)
+                    if (line.Contains("\"version\":")) stats.PackageCount++;
+            }
+            catch (Exception exception)
+            {
+                stats.SDKType = "Unity Editor";
+                Debug.LogWarning($"Unable to read the VCC manifest: {exception.Message}");
+            }
         }
         else
         {

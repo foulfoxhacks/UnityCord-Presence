@@ -10,6 +10,7 @@ public class NexiumBridge
     private static long startTime;
     private static int cycleIndex = 0;
     private static double lastCycleTime;
+    private static double nextInitAttempt;
 
     // !!! PASTE YOUR APPLICATION ID HERE !!!
     private const long ClientID = 1473390464748228783; 
@@ -18,6 +19,8 @@ public class NexiumBridge
     {
         startTime = DateTimeOffset.Now.ToUnixTimeSeconds();
         EditorApplication.update += UpdateLoop;
+        AssemblyReloadEvents.beforeAssemblyReload += Shutdown;
+        EditorApplication.quitting += Shutdown;
         lastCycleTime = EditorApplication.timeSinceStartup;
         Init();
     }
@@ -26,12 +29,19 @@ public class NexiumBridge
     {
         try {
             discord = new Discord.Discord(ClientID, (ulong)CreateFlags.NoRequireDiscord);
-        } catch { }
+        } catch (Exception exception) {
+            discord = null;
+            nextInitAttempt = EditorApplication.timeSinceStartup + 15.0;
+            Debug.LogWarning($"Discord Rich Presence initialization failed: {exception.Message}");
+        }
     }
 
     static void UpdateLoop()
     {
-        if (discord == null) return;
+        if (discord == null) {
+            if (EditorApplication.timeSinceStartup >= nextInitAttempt) Init();
+            return;
+        }
 
         try {
             discord.RunCallbacks();
@@ -49,9 +59,18 @@ public class NexiumBridge
             {
                 if (Time.frameCount % 500 == 0) SyncVCCPresence();
             }
-        } catch {
-            discord = null;
+        } catch (Exception exception) {
+            Debug.LogWarning($"Discord Rich Presence callback failed: {exception.Message}");
+            Shutdown();
+            nextInitAttempt = EditorApplication.timeSinceStartup + 15.0;
         }
+    }
+
+    static void Shutdown()
+    {
+        if (discord == null) return;
+        discord.Dispose();
+        discord = null;
     }
 
     static void SyncVCCPresence()
@@ -104,6 +123,9 @@ public class NexiumBridge
             }
         };
 
-        am.UpdateActivity(activity, (res) => { });
+        am.UpdateActivity(activity, (result) => {
+            if (result != Result.Ok)
+                Debug.LogWarning($"Discord Rich Presence update failed: {result}");
+        });
     }
 }
