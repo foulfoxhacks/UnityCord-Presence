@@ -1,4 +1,4 @@
-# Discord Rich Presence for Unity
+# UnityCord Presence - A Discord Rich Presence for Unity
 
 A small, editor-focused Discord Rich Presence integration for Unity and VRChat Creator Companion (VCC) projects. It uses Discord's Game SDK to show the current Unity project, editor activity, SDK type, package count, and session duration in Discord.
 
