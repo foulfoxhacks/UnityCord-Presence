@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/31929080/README.md)
 # UnityCord Presence
 
 Editor-focused Discord Rich Presence for **Unity** and **VRChat Creator Companion (VCC)** projects.
