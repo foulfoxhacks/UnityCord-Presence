@@ -1,27 +1,33 @@
-# UnityCord Presence - A Discord Rich Presence for Unity
+[README.md](https://github.com/user-attachments/files/31929080/README.md)
+# UnityCord Presence
 
-A small, editor-focused Discord Rich Presence integration for Unity and VRChat Creator Companion (VCC) projects. It uses Discord's Game SDK to show the current Unity project, editor activity, SDK type, package count, and session duration in Discord.
+Editor-focused Discord Rich Presence for **Unity** and **VRChat Creator Companion (VCC)** projects.
+
+**Created by [Sammy The Femboy Puppy](https://akasammythepuppy.me/)** · [Unity, VRChat & development portfolio](https://akasammythepuppy.me/work/)
+
+UnityCord uses Discord's Game SDK to show the active Unity project, editor activity, detected VRChat SDK type, VPM package count, Unity version, and session duration in Discord.
 
 ## Features
 
-- Runs automatically when the Unity Editor loads
-- Detects VRChat avatar and world projects from `Packages/vpm-manifest.json`
-- Shows the selected asset, script compilation, or asset importing state
-- Cycles through the VCC SDK type, VPM package count, and Unity version
-- Reconnects when Discord is temporarily unavailable
-- Cleans up the native Discord SDK during assembly reload and editor shutdown
+- loads automatically with the Unity Editor
+- detects VRChat avatar and world projects from `Packages/vpm-manifest.json`
+- reports selected asset, script compilation, and asset-importing states
+- cycles VCC SDK type, VPM package count, and Unity version
+- reconnects when Discord is temporarily unavailable
+- cleans up the native Discord SDK during assembly reload and editor shutdown
+- still works as a normal Unity Editor presence when no VCC manifest is present
 
 ## Requirements
 
 - Unity 2021.3 LTS or later
-- A 64-bit Windows Unity Editor
-- The Discord desktop client
-- A Discord application with Rich Presence art assets
-- The included `discord_game_sdk.dll` native library
+- 64-bit Windows Unity Editor
+- Discord desktop
+- Discord application with Rich Presence art assets
+- included `discord_game_sdk.dll`
 
 ## Installation
 
-Copy the repository files into the following locations in your Unity project's `Assets` directory:
+Copy the repository files into these locations in the Unity project's `Assets` folder:
 
 ```text
 Assets/
@@ -46,48 +52,71 @@ Assets/
       DiscordTimestamps.cs
 ```
 
-Keeping `NexiumBridge.cs` and `VCCManifestReader.cs` in an `Editor` folder prevents editor-only APIs from being included in player builds.
+Keep `NexiumBridge.cs` and `VCCManifestReader.cs` under an `Editor` directory so editor-only APIs are not included in player builds.
 
 ## Discord application setup
 
 1. Create an application in the [Discord Developer Portal](https://discord.com/developers/applications).
 2. Copy its Application ID.
 3. Replace the `ClientID` value in `Scripts/Control/Editor/NexiumBridge.cs`.
-4. Add Rich Presence art assets with these keys:
+4. Add Rich Presence art assets with the keys:
    - `vcc_logo`
    - `unity_icon`
-5. Open the project in Unity while the Discord desktop client is running.
+5. Start Discord desktop.
+6. Open the Unity project.
 
-The application ID is public metadata, not a secret. Do not add bot tokens, OAuth client secrets, or other credentials to the source code.
+The Discord Application ID is public metadata. Do **not** put bot tokens, OAuth client secrets, or other credentials in the project.
 
 ## How it works
 
-`NexiumBridge` is loaded automatically by Unity's `InitializeOnLoad` attribute. It initializes the Discord Game SDK, runs callbacks from the editor update loop, and updates the activity as the editor state changes.
+`NexiumBridge` loads through Unity's `InitializeOnLoad` behavior. It initializes Discord Game SDK, runs callbacks from the editor update loop, watches Unity editor state, and updates Rich Presence.
 
-`VCCManifestReader` reads `Packages/vpm-manifest.json` when present to identify the VRChat SDK type and count VPM packages. Projects without that file are shown as regular Unity Editor projects.
+`VCCManifestReader` reads:
 
-The `Scripts/Internal` files are the C# Discord Game SDK bindings used by the bridge. The small classes in `Scripts/Presence` are serializable presence data models for consumers that want to build additional tooling.
+```text
+Packages/vpm-manifest.json
+```
+
+when present to identify the VRChat SDK/project type and count VPM packages.
+
+Projects without that file are treated as regular Unity Editor projects.
 
 ## Troubleshooting
 
-- **No presence appears:** Confirm Discord is running and the `ClientID` belongs to an existing Discord application.
-- **Images do not appear:** Confirm the application has assets named `vcc_logo` and `unity_icon`. Discord may take time to process newly uploaded assets.
-- **DLL load error:** Confirm the DLL is under `Assets/Plugins`, enabled for the Unity Editor, and compatible with the editor architecture.
-- **Presence reports Unity Editor instead of a VRChat project:** Confirm `Packages/vpm-manifest.json` exists and is readable.
-- **Console warnings repeat:** The integration retries after failures. Check that Discord is running and that the native SDK library can load.
+### No presence appears
 
-## Development
+Confirm Discord desktop is running and the configured `ClientID` belongs to a valid Discord application.
 
-This repository contains reusable source files rather than a complete Unity project, so it does not include a `.sln`, `.csproj`, sample scene, or standalone build configuration. Test changes by importing the files into a Unity project and checking the editor console and Discord presence.
+### Rich Presence images do not appear
+
+Confirm the Discord application includes assets named `vcc_logo` and `unity_icon`. Newly uploaded assets can take time to process.
+
+### DLL load error
+
+Confirm `discord_game_sdk.dll` is under `Assets/Plugins`, enabled for the editor, and compatible with your Unity Editor architecture.
+
+### VRChat project detected as plain Unity
+
+Confirm `Packages/vpm-manifest.json` exists and is readable.
+
+### Repeated console warnings
+
+UnityCord retries after failures. Check that Discord is running and that the native library can load.
+
+## Development notes
+
+This repository contains reusable source files rather than a complete Unity project. It does not ship a `.sln`, `.csproj`, sample scene, or standalone build configuration.
+
+Test changes by importing the source into a Unity project and checking both the Unity Console and Discord presence.
 
 ## License
 
 MIT License. Copyright (c) 2026 NDG Sammy The Foxxo.
 
-## Creator
+## Creator and support
 
-Built by [Sammy The Femboy Puppy](https://akasammythepuppy.me/) ([@foulfoxhacks](https://github.com/foulfoxhacks)).
+UnityCord Presence is created and maintained by **[Sammy The Femboy Puppy](https://akasammythepuppy.me/)** (`@foulfoxhacks`).
 
-Explore more Unity editor tooling, VRChat work, and development projects in [Sammy's creator portfolio](https://akasammythepuppy.me/work/).
+The broader Unity, avatar, VRChat, and development portfolio is documented at **[akasammythepuppy.me/work/](https://akasammythepuppy.me/work/)**.
 
-For UnityCord bugs and feature requests, [open an issue](https://github.com/foulfoxhacks/UnityCord-Presence/issues) or contribute a pull request in this repository.
+For bugs and feature requests, [open an issue](https://github.com/foulfoxhacks/UnityCord-Presence/issues).
