@@ -83,3 +83,11 @@ This repository contains reusable source files rather than a complete Unity proj
 ## License
 
 MIT License. Copyright (c) 2026 NDG Sammy The Foxxo.
+
+## Creator
+
+Built by [Sammy The Femboy Puppy](https://akasammythepuppy.me/) ([@foulfoxhacks](https://github.com/foulfoxhacks)).
+
+Explore more Unity editor tooling, VRChat work, and development projects in [Sammy's creator portfolio](https://akasammythepuppy.me/work/).
+
+For UnityCord bugs and feature requests, [open an issue](https://github.com/foulfoxhacks/UnityCord-Presence/issues) or contribute a pull request in this repository.
